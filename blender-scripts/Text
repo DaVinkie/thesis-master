@@ -1,0 +1,83 @@
+import bpy
+
+def reset_blender():
+    # Select objects by type
+    for o in bpy.context.scene.objects:
+#        print(o.type)
+        if o.type == 'MESH':
+            o.select_set(True)
+        else:
+            o.select_set(False)
+
+    # Call the operator only once
+    bpy.ops.object.delete()
+    
+reset_blender()
+
+vertices = [(-1, -1, -1), (-1, 1, -1), (1, -1, -1), 
+    (1, 1, -1), (-1, -1, 1), (-1, 1, 1), 
+    (1, -1, 1), (1, 1, 1)]
+    
+edges = [(0, 1), (0, 2), (0, 4), (3, 1), (3, 2), (3, 7),
+    (5, 4), (5, 7), (5,1), (6, 4), (6, 7), (6, 2)] 
+
+# Create mesh from data    
+mesh = bpy.data.meshes.new("test_cube")
+mesh.from_pydata(vertices, edges, [])
+mesh.validate()
+mesh.update()
+
+# Link mesh to blender object
+ob = bpy.data.objects.new("cube_ob", mesh)
+scene = bpy.context.scene
+scene.collection.objects.link(ob)
+
+# Create base shape key
+sk_base = ob.shape_key_add(name="basis")
+sk_base.interpolation = "KEY_LINEAR"
+ob.data.shape_keys.use_relative = False
+
+vert_data = ob.data.vertices
+for i in range(5):
+    sk = ob.shape_key_add(name = "deform-x"+str(i), from_mix=False)
+    sk.interpolation = "KEY_LINEAR"
+    
+    sk.data[-1].co *= (i+1)
+    
+
+## Create 5 additional shape keys
+#for i in range(5):
+#    sk_base.data
+#    sk = ob.shape_key_add(name="deform-"+str(i))
+#    sk.interpolation = "KEY_LINEAR"
+#    
+## Change data per shape key
+key = ob.data.shape_keys.name
+print(key)
+##print('Here: ', bpy.data.shape_keys[key].key_blocks[:])
+keyblocks = bpy.data.shape_keys[key].key_blocks
+
+#for kb in keyblocks:
+#    print(kb.data[-1].co)
+#    
+#for i in range(len(keyblocks)):
+#    keyblocks[i].data[-1].co = keyblocks[i].data[-1].co * (i+1)
+#    
+#for kb in keyblocks:
+#    print(kb.data[-1].co)
+#    
+# Insert keyframes
+for frame in range(6):
+    for i, kb in enumerate(keyblocks):
+        if i == frame:
+            print(i, " and ", frame, " are the same!")
+            kb.value = i
+            kb.keyframe_insert(data_path="value", frame = frame*10)
+            ob.data.shape_keys.eval_time = i * 10
+            ob.data.shape_keys.keyframe_insert("eval_time", frame = frame*10)
+        else :
+            print(i, " and ", frame, " are not the same :(")
+            kb.value = 0
+            
+for kb in keyblocks:
+    print(kb.data[-1].co)
