@@ -32,6 +32,9 @@ ob = bpy.data.objects.new("cube_ob", mesh)
 scene = bpy.context.scene
 scene.collection.objects.link(ob)
 
+#bpy.ops.mesh.edge_face_add(ob)
+#ob.additional
+
 # Create base shape key
 sk_base = ob.shape_key_add(name="basis")
 sk_base.interpolation = "KEY_LINEAR"
@@ -71,10 +74,10 @@ for frame in range(6):
     for i, kb in enumerate(keyblocks):
         if i == frame:
             print(i, " and ", frame, " are the same!")
-            kb.value = i
-            kb.keyframe_insert(data_path="value", frame = frame*10)
+#            kb.value = i
+#            kb.keyframe_insert(data_path="value", frame = frame*10)
             ob.data.shape_keys.eval_time = i * 10
-            ob.data.shape_keys.keyframe_insert("eval_time", frame = frame*10)
+            ob.data.shape_keys.keyframe_insert("eval_time", frame = frame*1)
         else :
             print(i, " and ", frame, " are not the same :(")
             kb.value = 0

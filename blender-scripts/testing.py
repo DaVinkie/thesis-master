@@ -18,6 +18,7 @@ reset_blender()
 path_lin = '/home/danielvink/Documents/thesis-project/thesis-master/notebooks/outputCSV/'
 path_win = 'C:\\Users\\vinkd\\ThesisProject\\notebooks\\outputCSV\\'
 filename = '0_FaceMeshLandmarks_2022_02_10-12_54_01_PM.csv'
+filename = 'FULL_FaceMeshLandmarks_2022_03_17-03_51_35_PM.csv'
 
 def open_csv(os='win', csv_file=filename):
     ''' Read in specified csv file from specificed operating system. 
@@ -60,10 +61,13 @@ def center_to_origin(data, method='object'):
 vertices, edges = open_csv('win', filename)
 vertices = center_to_origin(vertices, method='object')
 
+n_frames = int(len(vertices) / 478)
+print('there are', n_frames, 'frames in the video')
+
 
 # Create mesh from data
 mesh = bpy.data.meshes.new("test_mesh")
-mesh.from_pydata(vertices, edges, [])
+mesh.from_pydata(vertices[:478], edges, [])
 mesh.validate()
 mesh.update()
 
@@ -79,36 +83,55 @@ sk_basis.interpolation = 'KEY_LINEAR'
 ob.data.shape_keys.use_relative = False
 
 # Create deformed shape keys
-for n in range(10):
+for f in range(n_frames):
     # Create new shape key
-    sk = ob.shape_key_add(name='Deform')
+    sk = ob.shape_key_add(name='Deform'+str(f))
     sk.interpolation = 'KEY_LINEAR'
-
-# Transform vertex positions of each shape key
-kbs = bpy.data.meshes[-1].shape_keys[-1].key_blocks
-#for sk in bpy.data.shape_keys[-1].key_blocks:
-for k in range(len(kbs)):    
-    for i in range(len(vertices)):
-        print('before', sk, sk.data[i].co.x)
-        kbs[k].data[i].co.x += (k*1)
-        kbs[k].data[i].co.y -= (k*1)
-        print('after', sk, sk.data[i].co.x)
+    index = f * 478
+    for i in range(len(sk.data)):
+        sk.data[i].co = vertices[index+i]
         
-for sk in bpy.data.shape_keys:
-    print(sk.key_blocks)
-
-for frame in range(11): # Basis + 10 deformations
-#    for shapekey in bpy.data.shape_keys:
-    for i, keyblock in enumerate(bpy.data.shape_keys[-1].key_blocks):
-#            print(frame, i, keyblock)
-#            if keyblock.name != 'Basis':
-#               curr = i - 1
+key = ob.data.shape_keys.name
+keyblocks = bpy.data.shape_keys[key].key_blocks
+        
+# Insert keyframes
+for frame in range(n_frames):
+    for i, kb in enumerate(keyblocks):
         if i == frame:
-           keyblock.value = 1
-           keyblock.keyframe_insert("value", frame=frame)
-        else:
-           keyblock.value = 0
-           keyblock.keyframe_insert("value", frame=frame)
+            print(i, " and ", frame, " are the same!")
+            kb.value = 1
+#            kb.keyframe_insert(data_path="value", frame = frame*10)
+            ob.data.shape_keys.eval_time = i*10
+            ob.data.shape_keys.keyframe_insert("eval_time", frame = frame)
+        else :
+#            print(i, " and ", frame, " are not the same :(")
+            kb.value = 0
 
-print("yy")
-# mode, key, data, active_shape_key
+## Transform vertex positions of each shape key
+#kbs = bpy.data.meshes[-1].shape_keys[-1].key_blocks
+##for sk in bpy.data.shape_keys[-1].key_blocks:
+#for k in range(len(kbs)):    
+#    for i in range(len(vertices):
+#        print('before', sk, sk.data[i].co.x)
+#        kbs[k].data[i].co.x += (k*1)
+#        kbs[k].data[i].co.y -= s(k*1)
+#        print('after', sk, sk.data[i].co.x)
+#        
+#for sk in bpy.data.shape_keys:
+#    print(sk.key_blocks)
+
+#for frame in range(11): # Basis + 10 deformations
+##    for shapekey in bpy.data.shape_keys:
+#    for i, keyblock in enumerate(bpy.data.shape_keys[-1].key_blocks):
+##            print(frame, i, keyblock)
+##            if keyblock.name != 'Basis':
+##               curr = i - 1
+#        if i == frame:
+#           keyblock.value = 1
+#           keyblock.keyframe_insert("value", frame=frame)
+#        ellse:
+#           keyblock.value = 0
+#           keyblock.keyframe_insert("value", frame=frame)
+
+#print("yy")
+## mode, key, data, active_shape_key
