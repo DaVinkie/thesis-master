@@ -128,5 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-thesis-unreal\FaceCap\Content\MetaHumans\*
-thesis-unreal/FaceCap/Content/MetaHumans/*
+# Game dev folders (Extremely large)
+thesis-unreal\FaceCap\Content\*
+thesis-unreal/FaceCap/Content/*
+
+thesis-unreal\*
+thesis-unreal/*
+
+thesis-unity\*
+thesis-unity/*
