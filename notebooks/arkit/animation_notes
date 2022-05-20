@@ -1,0 +1,8 @@
+Poging: Verschillende videos combineren tot 1 animatie
+
+Hoe: 	* Videos zijn op te delen in CSV bestanden met verschillende tracks per blendshape
+	* Tracks uit verschillende videos samenvoegen in 1 bestand
+	
+Probleem: Opnames kunnen van verschillende tijdsduur zijn.
+
+Fit data to polynomial -> adjust linspace to duration of animation -> multiply function by scalar
