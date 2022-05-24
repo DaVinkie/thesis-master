@@ -1,0 +1,14 @@
+{
+  "subject" : "Vislabs_iPhone",
+  "version" : 1,
+  "slate" : "MySlate",
+  "startTimecode" : "13:49:03:19.101",
+  "calibrated" : true,
+  "identifier" : "20220523_MySlate_43",
+  "date" : "2022-05-23T11:49:03Z",
+  "deviceModel" : "iPhone14,2",
+  "frames" : 278,
+  "appVersion" : "v1.1.2 (build 2)",
+  "endTimecode" : "13:49:07:50.033",
+  "take" : 43
+}

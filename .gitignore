@@ -137,3 +137,6 @@ thesis-unreal/*
 
 thesis-unity\*
 thesis-unity/*
+
+# Large movie files
+*.mov
